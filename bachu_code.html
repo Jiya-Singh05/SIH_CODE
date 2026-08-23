@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIH 2026: Unified Ecosystem</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for UI Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Tesseract.js for OCR -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    
+    <style>
+        /* Custom Scrollbar for Terminal */
+        .terminal-scroll::-webkit-scrollbar { width: 6px; }
+        .terminal-scroll::-webkit-scrollbar-track { background: #1f2937; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #4b5563; rounded: 4px; }
+        /* Bus Animation Transition */
+        #transit-bus { transition: left 2s ease-in-out; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-indigo-900 text-white flex flex-col shadow-xl z-20">
+        <div class="p-6 border-b border-indigo-800">
+            <h1 class="text-xl font-bold tracking-tight"><i class="fa-solid fa-network-wired mr-2"></i>SIH 2026 Core</h1>
+            <p class="text-xs text-indigo-300 mt-1">Unified Infrastructure Prototype</p>
+        </div>
+        <nav class="flex-1 p-4 space-y-2">
+            <button onclick="switchTab('tab-demo')" class="nav-btn w-full flex items-center p-3 rounded-lg bg-indigo-800 text-white transition">
+                <i class="fa-solid fa-play-circle w-6"></i> The Ramesh Story (Demo)
+            </button>
+            <button onclick="switchTab('tab-transit')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-indigo-800 text-indigo-100 transition">
+                <i class="fa-solid fa-bus-simple w-6"></i> TransitMesh Simulator
+            </button>
+            <button onclick="switchTab('tab-health')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-indigo-800 text-indigo-100 transition">
+                <i class="fa-solid fa-id-card-clip w-6"></i> Migrant Health PWA
+            </button>
+            <button onclick="switchTab('tab-schemes')" class="nav-btn w-full flex items-center p-3 rounded-lg hover:bg-indigo-800 text-indigo-100 transition">
+                <i class="fa-solid fa-hands-holding-circle w-6"></i> Scheme & OCR Engine
+            </button>
+        </nav>
+        <div class="p-4 border-t border-indigo-800 text-xs text-indigo-400 text-center">
+            P2P Offline-First Node Active
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto relative">
+        
+        <!-- ========================================== -->
+        <!-- TAB 0: UNIFIED DEMO ("The Ramesh Story")   -->
+        <!-- ========================================== -->
+        <section id="tab-demo" class="tab-content p-8 block">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-4">Live Orchestration: "The Ramesh Story"</h2>
+                    <p class="text-slate-500 mb-6">Experience the full lifecycle of an offline rural patient sync, diagnosis, and government scheme enrollment.</p>
+                    <button onclick="runRameshDemo()" id="demo-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                        <i class="fa-solid fa-rocket mr-2"></i> Execute Live Demo
+                    </button>
+                </div>
+
+                <!-- Stepper -->
+                <div class="relative">
+                    <div class="absolute left-6 top-0 bottom-0 w-1 bg-indigo-100 rounded"></div>
+                    <div class="space-y-8 relative">
+                        <div id="step-1" class="step-card flex items-start opacity-50 transition-opacity">
+                            <div class="w-12 h-12 rounded-full bg-white border-4 border-indigo-200 flex items-center justify-center text-indigo-600 font-bold z-10">1</div>
+                            <div class="ml-6 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex-1">
+                                <h3 class="font-bold text-lg">Offline Intake (Local PWA)</h3>
+                                <p class="text-slate-500 text-sm mt-1">Patient 'Ramesh' visits rural clinic without internet. Vitals are captured offline via IndexedDB.</p>
+                            </div>
+                        </div>
+                        <div id="step-2" class="step-card flex items-start opacity-50 transition-opacity">
+                            <div class="w-12 h-12 rounded-full bg-white border-4 border-indigo-200 flex items-center justify-center text-indigo-600 font-bold z-10">2</div>
+                            <div class="ml-6 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex-1">
+                                <h3 class="font-bold text-lg">P2P TransitMesh Sync</h3>
+                                <p class="text-slate-500 text-sm mt-1">Local bus arrives. Clinic node syncs encrypted payload to bus via Wi-Fi Direct. Bus uploads to cloud upon reaching urban hub.</p>
+                            </div>
+                        </div>
+                        <div id="step-3" class="step-card flex items-start opacity-50 transition-opacity">
+                            <div class="w-12 h-12 rounded-full bg-white border-4 border-indigo-200 flex items-center justify-center text-indigo-600 font-bold z-10">3</div>
+                            <div class="ml-6 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex-1">
+                                <h3 class="font-bold text-lg">Visual & Audio Rx Gen</h3>
+                                <p class="text-slate-500 text-sm mt-1">Cloud processes data, generating an offline-verifiable QR code and universal visual/audio prescription for low-literacy users.</p>
+                            </div>
+                        </div>
+                        <div id="step-4" class="step-card flex items-start opacity-50 transition-opacity">
+                            <div class="w-12 h-12 rounded-full bg-white border-4 border-indigo-200 flex items-center justify-center text-indigo-600 font-bold z-10">4</div>
+                            <div class="ml-6 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex-1">
+                                <h3 class="font-bold text-lg">Scheme Discovery & OCR</h3>
+                                <p class="text-slate-500 text-sm mt-1">NLP identifies scheme eligibility (Workmen's Comp). Tesseract OCR autofills Aadhaar/Income details seamlessly.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 1: TRANSITMESH SIMULATOR               -->
+        <!-- ========================================== -->
+        <section id="tab-transit" class="tab-content p-8 hidden h-full flex flex-col">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800"><i class="fa-solid fa-satellite-dish mr-2 text-indigo-600"></i>TransitMesh Simulator</h2>
+            
+            <!-- Visual Network -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-6 relative overflow-hidden h-48 flex items-center">
+                <!-- Nodes -->
+                <div class="absolute left-10 flex flex-col items-center z-10">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-red-600 text-2xl shadow"><i class="fa-solid fa-house-medical"></i></div>
+                    <span class="mt-2 text-xs font-bold text-slate-600">Rural Clinic<br>(Offline)</span>
+                </div>
+                
+                <div class="absolute right-10 flex flex-col items-center z-10">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-2xl shadow"><i class="fa-solid fa-cloud"></i></div>
+                    <span class="mt-2 text-xs font-bold text-slate-600">Urban Node<br>(Cloud Server)</span>
+                </div>
+
+                <!-- Path & Bus -->
+                <div class="absolute left-24 right-24 h-1 border-t-2 border-dashed border-slate-300"></div>
+                <div id="transit-bus" class="absolute left-[10%] w-12 h-12 bg-indigo-500 text-white rounded-lg flex items-center justify-center text-xl shadow-lg z-20">
+                    <i class="fa-solid fa-bus"></i>
+                </div>
+            </div>
+
+            <!-- Controls & Terminal Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 min-h-0">
+                <!-- Config Panel -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col">
+                    <h3 class="font-bold text-lg mb-4">Network Simulation Control</h3>
+                    
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Latency Injection (ms)</label>
+                    <input type="range" id="net-delay" min="0" max="2000" value="500" class="w-full mb-2" oninput="document.getElementById('delay-val').innerText = this.value + 'ms'">
+                    <div class="text-right text-xs text-slate-500 mb-4" id="delay-val">500ms</div>
+
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Packet Loss Probability (%)</label>
+                    <input type="range" id="net-loss" min="0" max="50" value="0" class="w-full mb-2" oninput="document.getElementById('loss-val').innerText = this.value + '%'">
+                    <div class="text-right text-xs text-slate-500 mb-6" id="loss-val">0%</div>
+
+                    <button onclick="triggerP2PSync()" class="mt-auto bg-slate-800 hover:bg-slate-900 text-white py-3 rounded-lg font-medium transition flex items-center justify-center">
+                        <i class="fa-solid fa-wifi mr-2"></i> Trigger Wi-Fi Direct Sync
+                    </button>
+                </div>
+
+                <!-- Terminal -->
+                <div class="bg-slate-900 rounded-xl shadow-inner p-4 flex flex-col font-mono text-sm h-full">
+                    <div class="text-slate-400 text-xs mb-2 uppercase tracking-wider border-b border-slate-700 pb-2">Mesh Delta-Log Terminal</div>
+                    <div id="terminal-output" class="flex-1 overflow-y-auto terminal-scroll text-green-400 space-y-1">
+                        <div>> Node initialized. Awaiting P2P connection...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 2: HEALTH PASSPORT PWA                 -->
+        <!-- ========================================== -->
+        <section id="tab-health" class="tab-content p-8 hidden">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800"><i class="fa-solid fa-id-card-clip mr-2 text-indigo-600"></i>Migrant Health Passport</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Offline Intake Form (Upgraded) -->
+<div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col max-h-[75vh]">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-lg">Comprehensive Clinical Intake</h3>
+        <span class="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded flex items-center">
+            <i class="fa-solid fa-database mr-1"></i> IndexedDB Ready
+        </span>
+    </div>
+    
+    <!-- Scrollable Form Area -->
+    <div class="space-y-5 overflow-y-auto pr-2 pb-4 flex-1">
+        
+        <!-- Demographics -->
+        <div class="p-3 bg-slate-50 rounded border border-slate-100">
+            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Demographics</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="sm:col-span-2">
+                    <label class="block text-sm text-slate-600 mb-1">Patient Name</label>
+                    <input type="text" id="pat-name" value="Ramesh Kumar" class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-600 mb-1">Age</label>
+                    <input type="number" id="pat-age" value="45" class="w-full p-2 border rounded outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-600 mb-1">Gender</label>
+                    <select id="pat-gender" class="w-full p-2 border rounded outline-none text-sm">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Clinical Vitals -->
+        <div class="p-3 bg-red-50 rounded border border-red-100">
+            <h4 class="text-xs font-bold text-red-500 uppercase tracking-wider mb-3">Triaged Vitals</h4>
+            <div class="grid grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs text-slate-600 mb-1">BP (mmHg)</label>
+                    <input type="text" id="pat-bp" value="130/85" class="w-full p-2 border rounded outline-none text-sm bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-600 mb-1">SpO2 (%)</label>
+                    <input type="number" id="pat-spo2" value="96" class="w-full p-2 border rounded outline-none text-sm bg-white">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-600 mb-1">Temp (°F)</label>
+                    <input type="number" id="pat-temp" value="99.1" class="w-full p-2 border rounded outline-none text-sm bg-white">
+                </div>
+            </div>
+        </div>
+
+        <!-- Medical Details -->
+        <div class="p-3 bg-indigo-50 rounded border border-indigo-100">
+            <h4 class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-3">Diagnostics & Rx</h4>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-sm text-slate-600 mb-1">Chief Complaint</label>
+                    <input type="text" id="pat-complaint" value="Severe lower back pain after lifting debris. Suspected muscle strain." class="w-full p-2 border rounded outline-none text-sm bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-600 mb-1">Prescription Instructions</label>
+                    <input type="text" id="pat-rx" value="Take Paracetamol 1 in morning, 1 at night." class="w-full p-2 border rounded outline-none text-sm bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm text-slate-600 mb-1">Audio Language (TTS)</label>
+                    <select id="pat-lang" class="w-full p-2 border rounded outline-none text-sm bg-white">
+                        <option value="en-IN">English (India)</option>
+                        <option value="hi-IN">Hindi</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <button onclick="saveHealthData()" class="w-full mt-4 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-semibold shadow-md">
+        <i class="fa-solid fa-lock mr-2"></i> Save & Generate Encrypted Passport
+    </button>
+</div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-slate-600 mb-1">Patient Name</label>
+                            <input type="text" id="pat-name" value="Ramesh Kumar" class="w-full p-2 border rounded focus:ring-2 focus:ring-indigo-500 outline-none">
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-1">
+                                <label class="block text-sm text-slate-600 mb-1">Age</label>
+                                <input type="number" id="pat-age" value="45" class="w-full p-2 border rounded outline-none">
+                            </div>
+                            <div class="flex-1">
+                                <label class="block text-sm text-slate-600 mb-1">Language</label>
+                                <select id="pat-lang" class="w-full p-2 border rounded outline-none">
+                                    <option value="en-IN">English (India)</option>
+                                    <option value="hi-IN">Hindi (TTS Supported)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-slate-600 mb-1">Prescription Details (e.g., Paracetamol 1-0-1)</label>
+                            <input type="text" id="pat-rx" value="Take Paracetamol 1 in morning, 1 at night." class="w-full p-2 border rounded outline-none">
+                        </div>
+                        <button onclick="saveHealthData()" class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+                            Save Locally & Generate Passport
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Digital Badge Output -->
+                <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100 flex flex-col items-center justify-center text-center">
+                    <h3 class="font-bold text-lg text-indigo-900 mb-4">Encrypted Digital Badge</h3>
+                    
+                    <!-- QR Code Render Area -->
+                    <div id="qr-container" class="bg-white p-4 rounded-xl shadow-sm mb-4 h-48 w-48 flex items-center justify-center border border-dashed border-indigo-300">
+                        <span class="text-slate-400 text-sm">Awaiting Data...</span>
+                    </div>
+                    
+                    <!-- Visual/Audio Rx -->
+                    <div id="visual-rx" class="w-full bg-white p-4 rounded-lg shadow-sm border border-slate-100 hidden">
+                        <div class="text-sm font-bold text-slate-700 mb-2">Visual Rx (Low Literacy Mode)</div>
+                        <div class="flex justify-center gap-6 text-3xl mb-4 text-slate-300">
+                            <i id="rx-morning" class="fa-solid fa-sun transition-colors duration-300"></i>
+                            <i id="rx-afternoon" class="fa-solid fa-cloud-sun transition-colors duration-300"></i>
+                            <i id="rx-night" class="fa-solid fa-moon transition-colors duration-300"></i>
+                        </div>
+                        <button onclick="playAudioRx()" class="w-full bg-blue-100 text-blue-700 py-2 rounded font-medium hover:bg-blue-200 transition flex items-center justify-center">
+                            <i class="fa-solid fa-volume-high mr-2"></i> Play Audio Instructions
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: SCHEME DISCOVERY & OCR              -->
+        <!-- ========================================== -->
+        <section id="tab-schemes" class="tab-content p-8 hidden">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800"><i class="fa-solid fa-hands-holding-circle mr-2 text-indigo-600"></i>Scheme Discovery & Auto-Fill Engine</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- NL Discovery Engine -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                    <h3 class="font-bold text-lg mb-2">Problem-First Discovery</h3>
+                    <p class="text-sm text-slate-500 mb-4">Describe the issue via text or voice. NLP deterministic engine maps to schemes without LLM hallucinations.</p>
+                    
+                    <div class="relative mb-4">
+                        <textarea id="nl-input" rows="3" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none pr-12" placeholder="E.g., I got injured at work and cannot afford medicine..."></textarea>
+                        <button onclick="startVoiceRecognition()" class="absolute right-3 bottom-3 w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-200 transition" title="Voice Input">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                    </div>
+                    
+                    <button onclick="discoverSchemes()" class="bg-slate-800 text-white py-2 rounded-lg hover:bg-slate-900 transition mb-6">Match Schemes</button>
+
+                    <!-- Results Area -->
+                    <div id="scheme-results" class="space-y-3 flex-1">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- OCR & Auto-fill -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="font-bold text-lg mb-4">Tesseract OCR Auto-Fill</h3>
+                    
+                    <!-- File Upload -->
+                    <div class="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center mb-6 hover:bg-slate-50 transition cursor-pointer relative" onclick="document.getElementById('ocr-upload').click()">
+                        <input type="file" id="ocr-upload" class="hidden" accept="image/*" onchange="handleOCRUpload(event)">
+                        <i class="fa-solid fa-file-image text-3xl text-slate-400 mb-2"></i>
+                        <p class="text-sm text-slate-600">Upload Mock ID / Income Cert</p>
+                        <p class="text-xs text-slate-400 mt-1">Processed entirely locally in browser</p>
+                        
+                        <div id="ocr-loader" class="absolute inset-0 bg-white/90 hidden flex-col items-center justify-center rounded-lg">
+                            <i class="fa-solid fa-circle-notch fa-spin text-2xl text-indigo-600 mb-2"></i>
+                            <span class="text-xs font-bold text-indigo-800">Extracting Text...</span>
+                        </div>
+                    </div>
+
+                    <!-- Auto-filled Form -->
+                    <div class="bg-slate-50 p-4 rounded border border-slate-200">
+                        <h4 class="text-sm font-bold text-slate-700 mb-3 border-b pb-2">Gov Application Form</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs text-slate-500">Full Name</label>
+                                <input type="text" id="form-name" class="w-full p-2 text-sm border rounded bg-white" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500">ID Number (Aadhaar / UAN)</label>
+                                <input type="text" id="form-id" class="w-full p-2 text-sm border rounded bg-white" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-500">Verified Income (₹)</label>
+                                <input type="text" id="form-income" class="w-full p-2 text-sm border rounded bg-white" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- CORE JAVASCRIPT ARCHITECTURE -->
+    <script>
+        /* ========================================================
+           TAB MANAGEMENT
+           ======================================================== */
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // UI Button styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-indigo-800', 'text-white');
+                btn.classList.add('hover:bg-indigo-800', 'text-indigo-100');
+            });
+            event.currentTarget.classList.remove('hover:bg-indigo-800', 'text-indigo-100');
+            event.currentTarget.classList.add('bg-indigo-800', 'text-white');
+        }
+
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        /* ========================================================
+           TIER 0: DEMO ORCHESTRATOR ("The Ramesh Story")
+           ======================================================== */
+        async function runRameshDemo() {
+            const btn = document.getElementById('demo-btn');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Executing Protocol...';
+            btn.disabled = true;
+
+            // Reset Steps
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`step-${i}`).classList.remove('opacity-100');
+                document.getElementById(`step-${i}`).classList.add('opacity-50');
+            }
+
+            // Step 1: Health PWA Intake
+            document.getElementById('step-1').classList.replace('opacity-50', 'opacity-100');
+            await sleep(1500);
+            switchTab('tab-health');
+            document.getElementById('pat-name').value = "Ramesh Kumar";
+            document.getElementById('pat-rx').value = "Paracetamol 1 in morning, 1 at night.";
+            saveHealthData(); 
+            await sleep(2500);
+
+            // Step 2: TransitMesh
+            document.querySelectorAll('.nav-btn')[0].click(); // Go back to demo tab visually
+            document.getElementById('step-1').classList.replace('opacity-100', 'opacity-50');
+            document.getElementById('step-2').classList.replace('opacity-50', 'opacity-100');
+            await sleep(1500);
+            switchTab('tab-transit');
+            triggerP2PSync();
+            await sleep(4000); // wait for bus animation
+
+            // Step 3: Rx Output
+            document.querySelectorAll('.nav-btn')[0].click();
+            document.getElementById('step-2').classList.replace('opacity-100', 'opacity-50');
+            document.getElementById('step-3').classList.replace('opacity-50', 'opacity-100');
+            await sleep(1500);
+            switchTab('tab-health');
+            playAudioRx(); // Triggers TTS
+            await sleep(3500);
+
+            // Step 4: Scheme & OCR
+            document.querySelectorAll('.nav-btn')[0].click();
+            document.getElementById('step-3').classList.replace('opacity-100', 'opacity-50');
+            document.getElementById('step-4').classList.replace('opacity-50', 'opacity-100');
+            await sleep(1500);
+            switchTab('tab-schemes');
+            document.getElementById('nl-input').value = "I got injured at work while carrying bricks.";
+            discoverSchemes();
+            await sleep(2000);
+
+            // End Demo
+            document.querySelectorAll('.nav-btn')[0].click();
+            btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i> Demo Complete - Restart';
+            btn.disabled = false;
+        }
+
+        /* ========================================================
+           TIER 1: TRANSITMESH SIMULATOR
+           ======================================================== */
+        function logTerminal(msg, isError = false) {
+            const term = document.getElementById('terminal-output');
+            const time = new Date().toISOString().split('T')[1].substring(0, 8);
+            const div = document.createElement('div');
+            div.className = isError ? "text-red-400" : "text-green-400";
+            div.innerText = `[${time}] ${msg}`;
+            term.appendChild(div);
+            term.scrollTop = term.scrollHeight;
+        }
+
+        async function triggerP2PSync() {
+            const delay = parseInt(document.getElementById('net-delay').value);
+            const lossProb = parseInt(document.getElementById('net-loss').value);
+            const bus = document.getElementById('transit-bus');
+            
+            // Reset Bus
+            bus.style.transition = 'none';
+            bus.style.left = '10%';
+            logTerminal("Initiating Wi-Fi Direct Handshake...");
+            await sleep(500);
+
+            // Calculate Packet Drop
+            if(Math.random() * 100 < lossProb) {
+                logTerminal("ERROR: Packet dropped due to interference. Retrying...", true);
+                return;
+            }
+
+            logTerminal("Payload encrypted. P2P sync to TransitNode (Bus) successful.");
+            logTerminal("Bus departing for Urban Cloud Hub...");
+            
+            // Animate Bus
+            await sleep(100);
+            bus.style.transition = 'left 2s ease-in-out';
+            bus.style.left = '80%';
+
+            await sleep(2000); // travel time
+            logTerminal(`Connecting to Cloud API... Simulating ${delay}ms latency.`);
+            
+            await sleep(delay);
+            logTerminal("200 OK: Data synchronized to National Health Grid.");
+        }
+
+        /* ========================================================
+           TIER 2: MIGRANT HEALTH PASSPORT (IndexedDB + QR + TTS)
+           ======================================================== */
+        // IndexedDB Setup
+        let db;
+        const request = indexedDB.open("HealthDB", 1);
+        request.onupgradeneeded = event => {
+            db = event.target.result;
+            db.createObjectStore("patients", { keyPath: "id" });
+        };
+        request.onsuccess = event => { db = event.target.result; };
+
+        let qrcodeObj = null;
+
+        function saveHealthData() {
+            const name = document.getElementById('pat-name').value;
+            const rx = document.getElementById('pat-rx').value;
+            
+            const payload = {
+                id: Date.now(),
+                name: name,
+                rx: rx,
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to IDB
+            if(db) {
+                const tx = db.transaction("patients", "readwrite");
+                tx.objectStore("patients").put(payload);
+            }
+
+            // Generate "Encrypted" QR (Base64 as mock)
+            const b64Payload = btoa(JSON.stringify(payload));
+            const qrContainer = document.getElementById('qr-container');
+            qrContainer.innerHTML = ''; // clear
+            
+            qrcodeObj = new QRCode(qrContainer, {
+                text: b64Payload,
+                width: 150,
+                height: 150,
+                colorDark : "#312e81",
+                colorLight : "#ffffff"
+            });
+
+            // Parse Visual Rx (Basic NLP for Sun/Moon)
+            const rxLower = rx.toLowerCase();
+            document.getElementById('rx-morning').classList.toggle('text-yellow-500', rxLower.includes('morning'));
+            document.getElementById('rx-morning').classList.toggle('text-slate-300', !rxLower.includes('morning'));
+            
+            document.getElementById('rx-night').classList.toggle('text-indigo-500', rxLower.includes('night'));
+            document.getElementById('rx-night').classList.toggle('text-slate-300', !rxLower.includes('night'));
+
+            document.getElementById('visual-rx').classList.remove('hidden');
+        }
+
+        function playAudioRx() {
+            const text = document.getElementById('pat-rx').value;
+            const lang = document.getElementById('pat-lang').value;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang;
+            
+            // Add some Indian context if Hindi is selected but text is English (browser attempts transliteration)
+            speechSynthesis.speak(utterance);
+        }
+
+        /* ========================================================
+           TIER 3: SCHEME DISCOVERY & TESSERACT OCR
+           ======================================================== */
+        
+        // Deterministic Scheme Rules (No LLM required)
+        const schemeRules = [
+            { keywords: ["injur", "accident", "work"], name: "PM Suraksha Bima Yojana", coverage: "₹2 Lakhs Death/Disability" },
+            { keywords: ["pregnant", "maternity", "baby"], name: "Pradhan Mantri Matru Vandana Yojana", coverage: "₹5,000 Cash Incentive" },
+            { keywords: ["health", "hospital", "sick"], name: "Ayushman Bharat PM-JAY", coverage: "₹5 Lakhs Health Cover" }
+        ];
+
+        function discoverSchemes() {
+            const input = document.getElementById('nl-input').value.toLowerCase();
+            const container = document.getElementById('scheme-results');
+            container.innerHTML = '';
+
+            let found = false;
+            schemeRules.forEach(rule => {
+                if(rule.keywords.some(kw => input.includes(kw))) {
+                    found = true;
+                    container.innerHTML += `
+                        <div class="p-3 border border-green-200 bg-green-50 rounded-lg flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-green-800 text-sm">${rule.name}</h4>
+                                <p class="text-xs text-green-600">${rule.coverage}</p>
+                            </div>
+                            <button class="text-xs bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Auto-Apply</button>
+                        </div>
+                    `;
+                }
+            });
+
+            if(!found) {
+                container.innerHTML = `<div class="text-sm text-slate-500 italic p-2">No specific scheme mapped. Try describing your issue differently.</div>`;
+            }
+        }
+
+        // Voice Recognition (Web Speech API)
+        function startVoiceRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if(!SpeechRecognition) {
+                alert("Voice input not supported in this browser.");
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'en-IN';
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                document.getElementById('nl-input').placeholder = "Listening...";
+            };
+            
+            recognition.onresult = function(event) {
+                document.getElementById('nl-input').value = event.results[0][0].transcript;
+                discoverSchemes();
+            };
+            
+            recognition.start();
+        }
+
+        // Tesseract.js OCR Processing
+        async function handleOCRUpload(event) {
+            const file = event.target.files[0];
+            if(!file) return;
+
+            const loader = document.getElementById('ocr-loader');
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+
+            try {
+                // Run local OCR
+                const result = await Tesseract.recognize(file, 'eng');
+                const text = result.data.text;
+                
+                console.log("OCR Extracted Text:", text);
+
+                // Deterministic Regex parsing (Mock Logic for Indian IDs / Income certs)
+                // Example format expected in image: "Name: John Doe", "ID: 123456789012", "Income: 50000"
+                const nameMatch = text.match(/Name[\s:]+([A-Za-z\s]+)/i);
+                const idMatch = text.match(/(?:ID|Aadhaar|UAN)[\s:]+(\d{10,12})/i);
+                const incomeMatch = text.match(/Income[\s:Rs\.]+([\d,]+)/i);
+
+                // Fallbacks if regex misses due to OCR noise, picking random lines
+                const lines = text.split('\n').filter(l => l.trim().length > 0);
+
+                document.getElementById('form-name').value = nameMatch ? nameMatch[1].trim() : (lines[0] || "Unknown");
+                document.getElementById('form-id').value = idMatch ? idMatch[1] : (lines.find(l => /\d{10}/.test(l)) || "XXXX-XXXX-XXXX");
+                document.getElementById('form-income').value = incomeMatch ? incomeMatch[1] : "60,000";
+
+            } catch (err) {
+                console.error("OCR Error:", err);
+                alert("OCR Failed. Please ensure the image is clear.");
+            } finally {
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+                event.target.value = ''; // reset file input
+            }
+        }
+    </script>
+</body>
+</html>
